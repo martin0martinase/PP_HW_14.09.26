@@ -42,6 +42,15 @@ split_ranges(const data_t& data, size_t threads_count)
     return ranges;
 }
 
+value_t sum_range(data_t::const_iterator begin, data_t::const_iterator end)
+{
+    value_t sum = 0;
+    for (auto it = begin; it != end; ++it) {
+        sum += *it;
+    }
+    return sum;
+}
+
 value_t parallel_sum(const data_t& data, size_t threads_count)
 {
     value_t total_sum = 0;
@@ -57,15 +66,6 @@ value_t parallel_sum(const data_t& data, size_t threads_count)
     return total_sum;
 }
 
-value_t sum_range(data_t::const_iterator begin, data_t::const_iterator end)
-{
-    value_t sum = 0;
-    for (auto it = begin; it != end; ++it) {
-        sum += *it;
-    }
-    return sum;
-}
-
 int main(int argc, char* argv[]){
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <threads_count>\n";
@@ -73,8 +73,11 @@ int main(int argc, char* argv[]){
     }
 
     size_t threads_count = std::stoul(argv[1]);
-    
+
+    constexpr size_t size = 1000000000;
+    data_t values(size, 1);
     Clicker cl;
+
     value_t result = parallel_sum(values, threads_count);
     double elapsed = cl.millisec();
     std::cout << "result = " << result << ", time = " << elapsed << " ms\n";

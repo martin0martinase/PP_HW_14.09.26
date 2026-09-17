@@ -7,6 +7,23 @@
 using data_t = std::vector<unsigned long long>;
 using value_t = data_t::value_type;
 
+class Clicker
+{
+public:
+    Clicker():
+        start_(std::chrono::high_resolution_clock::now())
+    {}
+    double millisec() const {
+        using std::chrono::high_resolution_clock;
+        using std::chrono::duration_cast;
+        using std::chrono::milliseconds;
+        auto t = high_resolution_clock::now();
+        return duration_cast<milliseconds>(t - start_).count();
+    }
+private:
+    std::chrono::time_point<std::chrono::high_resolution_clock> start_;
+};
+
 std::vector<std::pair<data_t::const_iterator, data_t::const_iterator>>
 split_ranges(const data_t& data, size_t threads_count)
 {
@@ -50,6 +67,9 @@ value_t sum_range(data_t::const_iterator begin, data_t::const_iterator end)
 }
 
 int main(int argc, char* argv[]){
-    data_t v = {1, 2, 3, 4, 5};
-    std::cout << sum_range(v.begin(), v.end()) << "\n";
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <threads_count>\n";
+        return 1;
+    }
+    size_t threads_count = std::stoul(argv[1]);
 }

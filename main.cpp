@@ -1,6 +1,8 @@
 #include <iostream>
 #include <chrono>
 #include <vector>
+#include <thread>
+#include <future>
 
 using data_t = std::vector<unsigned long long>;
 using value_t = data_t::value_type;
@@ -23,6 +25,21 @@ split_ranges(const data_t& data, size_t threads_count)
     return ranges;
 }
 
+value_t parallel_sum(const data_t& data, size_t threads_count)
+{
+    value_t total_sum = 0;
+    auto ranges = split_ranges(data, threads_count);
+
+    std::vector<std::future<value_t>> futures;
+    for (const auto& range : ranges) {
+        futures.push_back(std::async(std::launch::async, sum_range, range.first, range.second));
+    }
+    for (auto& f : futures) {
+        total_sum += f.get();
+    }
+    return total_sum;
+}
+
 value_t sum_range(data_t::const_iterator begin, data_t::const_iterator end)
 {
     value_t sum = 0;
@@ -35,5 +52,4 @@ value_t sum_range(data_t::const_iterator begin, data_t::const_iterator end)
 int main(int argc, char* argv[]){
     data_t v = {1, 2, 3, 4, 5};
     std::cout << sum_range(v.begin(), v.end()) << "\n";
-    std::cout << sum_range(v.begin(), v.begin() + 2) << "\n";
 }

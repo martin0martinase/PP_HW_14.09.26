@@ -71,5 +71,11 @@ int main(int argc, char* argv[]){
         std::cerr << "Usage: " << argv[0] << " <threads_count>\n";
         return 1;
     }
+
     size_t threads_count = std::stoul(argv[1]);
+    
+    Clicker cl;
+    value_t result = parallel_sum(values, threads_count);
+    double elapsed = cl.millisec();
+    std::cout << "result = " << result << ", time = " << elapsed << " ms\n";
 }

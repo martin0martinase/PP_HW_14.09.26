@@ -79,6 +79,6 @@ int main(int argc, char* argv[]){
     Clicker cl;
 
     value_t result = parallel_sum(values, threads_count);
-    double elapsed = cl.millisec();
-    std::cout << "result = " << result << ", time = " << elapsed << " ms\n";
+    double elapsed_time = cl.millisec();
+    std::cout << threads_count << "," << elapsed_time << "\n";
 }
